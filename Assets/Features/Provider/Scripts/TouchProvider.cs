@@ -10,7 +10,7 @@ public class TouchProvider : MonoBehaviour
 {
     public static TouchProvider Instance;
 
-    public event Action<Vector2> OnSwipe;
+    public event Action<Vector2, Vector2> OnSwipe;
     public event Action<Vector2> OnTap;
 
     private Vector2? _primaryTouchBeganPosition;
@@ -95,9 +95,9 @@ public class TouchProvider : MonoBehaviour
             direction = deltaY > 0 ? Vector2.up : Vector2.down;
         }
         
-        OnSwipe?.Invoke(direction);
+        OnSwipe?.Invoke(direction, from);
 
-        Debug.Log($"OnSwipe {direction}");
+        Debug.Log($"OnSwipe {direction} {from}");
     }
 
     void CheckIfTapped(Vector2 from, Vector2 to)
