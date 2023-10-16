@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
-using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class TouchProvider : MonoBehaviour
 {
@@ -24,8 +19,6 @@ public class TouchProvider : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-
-            TouchSimulation.Enable();
         }
         else
         {
@@ -35,29 +28,31 @@ public class TouchProvider : MonoBehaviour
     
     void Update()
     {
-        var phase = Touchscreen.current.primaryTouch.phase.ReadValue();
-
-        switch (phase)
+        if (Input.touchCount <= 0) return;
+        
+        var primaryTouch = Input.GetTouch(0);
+        
+        switch (primaryTouch.phase)
         {
             case TouchPhase.Began:
-                OnTouchBegan();
+                OnTouchBegan(primaryTouch);
                 break;
             case TouchPhase.Ended:
-                OnTouchEnded();
+                OnTouchEnded(primaryTouch);
                 break;
             default:
                 break;
         }
     }
 
-    void OnTouchBegan()
+    void OnTouchBegan(Touch primaryTouch)
     {
-        _primaryTouchBeganPosition = Touchscreen.current.primaryTouch.position.ReadValue();
+        _primaryTouchBeganPosition = primaryTouch.position;
     }
 
-    void OnTouchEnded()
+    void OnTouchEnded(Touch primaryTouch)
     {
-        _primaryTouchEndedPosition = Touchscreen.current.primaryTouch.position.ReadValue();
+        _primaryTouchEndedPosition = primaryTouch.position;
 
         if (_primaryTouchBeganPosition != null && _primaryTouchEndedPosition != null)
         {
